@@ -5,6 +5,10 @@ package controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import play.db.jpa.Transactional;
+import play.db.jpa.JPA;
+import models.Task;
+
 import play.*;
 import play.mvc.*;
 
@@ -18,26 +22,39 @@ public class Application extends Controller {
         return ok(index.render("hello, world", play.data.Form.form(models.Task.class)));
     }
 
+    @Transactional
     public static Result addTask() {
         log.info("Adding a task");
         play.data.Form<models.Task> form = play.data.Form.form(models.Task.class).bindFromRequest();
         if (form.hasErrors()) {
-            return badRequest(index.render("hello, world", form));
+            return badRequest(index.render("This shit is broke", form));
         }
-        else {
-            models.Task task = form.get();
-            task.save();
-            return redirect(routes.Application.index());
-        }
+
+        models.Task task = form.get();
+        play.db.jpa.JPA.em().persist(task);
+        return redirect(routes.Application.index());
     }
 
-    public static void clearTasks() {
-        java.util.List<models.Task> tasks = new play.db.ebean.Model.Finder(String.class, models.Task.class).all();
-        tasks = null;
-    }
-
+    @Transactional
     public static Result getTasks() {
-        java.util.List<models.Task> tasks = new play.db.ebean.Model.Finder(String.class, models.Task.class).all();
+        java.util.List<models.Task> tasks = JPA.em().createQuery("from Task", Task.class).getResultList();
         return ok(play.libs.Json.toJson(tasks));
+    }
+
+    @Transactional
+    public static models.Task getTaskById(Integer searchID) {
+        java.util.List<models.Task> tasks = JPA.em()
+                .createQuery("from Task t WHERE t.id = :id", Task.class)
+                .setParameter("id", searchID)
+                .getResultList(); //using result list because
+        models.Task t = null;
+        if (tasks.size()==1) {
+            t = tasks.get(0);
+        }
+        else if (tasks.size() > 1)
+        {
+            log.info("non unique ID found");
+        }
+        return t;
     }
 }

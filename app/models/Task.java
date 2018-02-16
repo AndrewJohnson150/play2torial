@@ -1,17 +1,40 @@
 package models;
 
-import play.db.ebean.Model;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Task extends Model {
+@Table(name = "task_table")
+public class Task {
+
+    public Task() {
+    }
 
     @Id
-    public String id;
+    @GeneratedValue
+    @Column(unique=true)
+    private Integer id;
 
     @play.data.validation.Constraints.Required
-    public String contents;
+    @Column(name = "contents_col",unique=true)
+    private String contents;
 
+    public Integer getId()  {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
 }
