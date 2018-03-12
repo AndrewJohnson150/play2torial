@@ -1,21 +1,31 @@
 package controllers;
 
+import models.Task;
 
+import services.TaskPersistenceService;
+import services.TaskPersistenceServiceImpl;
+
+import views.html.index;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import play.db.jpa.Transactional;
 import play.db.jpa.JPA;
-import models.Task;
+import play.data.Form;
+import views
 
-import play.*;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Result;
 
-import views.html.*;
+import java.util.List;
+
 
 public class Application extends Controller {
 
+    private static final TaskPersistenceService taskPersist = new TaskPersistenceServiceImpl();
+
+    private static final String EOL = System.getProperties().getProperty("line.separator");
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static Result index() {
@@ -24,37 +34,26 @@ public class Application extends Controller {
 
     @Transactional
     public static Result addTask() {
-        log.info("Adding a task");
         play.data.Form<models.Task> form = play.data.Form.form(models.Task.class).bindFromRequest();
+        log.info("Adding a task: " + form);
         if (form.hasErrors()) {
-            return badRequest(index.render("This shit is broke", form));
+            log.info("Task had error(s)");
+            return badRequest(index.render("Invalid form, try again.", form));
         }
 
         models.Task task = form.get();
-        play.db.jpa.JPA.em().persist(task);
+        taskPersist.persist(task);
         return redirect(routes.Application.index());
     }
 
     @Transactional
     public static Result getTasks() {
-        java.util.List<models.Task> tasks = JPA.em().createQuery("from Task", Task.class).getResultList();
+        List<models.Task> tasks = taskPersist.fetchAllTasks();
         return ok(play.libs.Json.toJson(tasks));
     }
 
     @Transactional
     public static models.Task getTaskById(Integer searchID) {
-        java.util.List<models.Task> tasks = JPA.em()
-                .createQuery("from Task t WHERE t.id = :id", Task.class)
-                .setParameter("id", searchID)
-                .getResultList(); //using result list because
-        models.Task t = null;
-        if (tasks.size()==1) {
-            t = tasks.get(0);
-        }
-        else if (tasks.size() > 1)
-        {
-            log.info("non unique ID found");
-        }
-        return t;
+        return taskPersist.fetchTaskByID(searchID);
     }
 }

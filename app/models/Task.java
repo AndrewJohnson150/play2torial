@@ -10,6 +10,9 @@ import javax.persistence.Table;
 @Table(name = "task_table")
 public class Task {
 
+    private static final String EOL = System.getProperties().getProperty("line.separator");
+    private static final String TAB = "   ";
+
     public Task() {
     }
 
@@ -36,5 +39,14 @@ public class Task {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Task [").append(EOL);
+        sb.append(TAB).append("id=").append(id).append(EOL);
+        sb.append(TAB).append("contents='").append(contents).append("'").append(EOL);
+        sb.append("]").append(EOL);
+        return sb.toString();
     }
 }
