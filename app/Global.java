@@ -3,7 +3,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import play.Application;
 import play.GlobalSettings;
 
-import configs.AppConfig;
+import configs.DataConfig;
 
 public class Global extends GlobalSettings {
     private ApplicationContext ctx;
@@ -11,7 +11,7 @@ public class Global extends GlobalSettings {
     @Override
     public void onStart(Application app) {
         super.onStart(app);
-        ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+        ctx = new AnnotationConfigApplicationContext(AppConfig.class, DataConfig.class);
     }
 
     @Override

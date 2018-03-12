@@ -2,12 +2,21 @@ package services;
 
 import models.Task;
 
-import play.db.jpa.JPA;
 
 import java.util.List;
 
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+@Named
 public class TaskPersistenceServiceImpl implements TaskPersistenceServices {
 
+    @PersistenceContext
+    private EntityManager em;
+
+    @Transactional
     @override
     public void saveTask(Task task) {
         JPA.em().persist(task);
@@ -15,12 +24,12 @@ public class TaskPersistenceServiceImpl implements TaskPersistenceServices {
 
     @Override
     public List<Task> fetchAllTasks() {
-        return JPA.em().createQuery("from Task", Task.class).getResultList();
+        return em.createQuery("from Task", Task.class).getResultList();
     }
 
     @override
     public Task fetchTaskByID(Integer idSearch) {
-        java.util.List<models.Task> tasks = JPA.em()
+        java.util.List<models.Task> tasks = em
                 .createQuery("from Task t WHERE t.id = :id", Task.class)
                 .setParameter("id", idSearch)
                 .getResultList(); //using result list because
