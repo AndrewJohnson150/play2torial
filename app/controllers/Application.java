@@ -6,13 +6,7 @@ import services.TaskPersistenceService;
 
 import views.html.index;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import play.db.jpa.JPA;
 import play.data.Form;
-import views
-
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -20,6 +14,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Named
 public class Application extends Controller {
@@ -43,7 +40,7 @@ public class Application extends Controller {
         }
 
         models.Task task = form.get();
-        taskPersist.persist(task);
+        taskPersist.saveTask(task);
         return redirect(routes.Application.index());
     }
 
@@ -52,7 +49,17 @@ public class Application extends Controller {
         return ok(play.libs.Json.toJson(tasks));
     }
 
-    public models.Task getTaskById(Integer searchID) {
-        return taskPersist.fetchTaskByID(searchID);
+    public Task getTaskById(Integer searchID) {
+        List<Task> tasks = taskPersist.fetchTaskByID(searchID);
+        models.Task t = null;
+        if (tasks.size()==1) {
+            t = tasks.get(0);
+        }
+        else if (tasks.size() > 1)
+        {
+            log.error("non unique ID found");
+        }
+        return t;
+
     }
 }

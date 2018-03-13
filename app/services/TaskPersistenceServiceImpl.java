@@ -10,16 +10,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+
 @Named
-public class TaskPersistenceServiceImpl implements TaskPersistenceServices {
+public class TaskPersistenceServiceImpl implements TaskPersistenceService {
 
     @PersistenceContext
     private EntityManager em;
 
     @Transactional
-    @override
+    @Override
     public void saveTask(Task task) {
-        JPA.em().persist(task);
+        em.persist(task);
     }
 
     @Override
@@ -27,20 +28,11 @@ public class TaskPersistenceServiceImpl implements TaskPersistenceServices {
         return em.createQuery("from Task", Task.class).getResultList();
     }
 
-    @override
-    public Task fetchTaskByID(Integer idSearch) {
-        java.util.List<models.Task> tasks = em
+    @Override
+    public List<Task> fetchTaskByID(Integer idSearch) {
+        return em
                 .createQuery("from Task t WHERE t.id = :id", Task.class)
                 .setParameter("id", idSearch)
                 .getResultList(); //using result list because
-        models.Task t = null;
-        if (tasks.size()==1) {
-            t = tasks.get(0);
-        }
-        else if (tasks.size() > 1)
-        {
-            log.error("non unique ID found");
-        }
-        return t;
     }
 }

@@ -9,5 +9,5 @@ public interface TaskPersistenceService {
 
     List<Task> fetchAllTasks();
 
-    Task fetchTaskByID();
+    List<Task> fetchTaskByID(Integer idSearch);
 }

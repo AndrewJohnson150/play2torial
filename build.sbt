@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "mysql" % "mysql-connector-java" % "5.1.45"
+  "mysql" % "mysql-connector-java" % "5.1.45",
   "javax.inject" % "javax.inject" % "1",
   "org.springframework" % "spring-aop"             % "4.1.6.RELEASE",
   "org.springframework" % "spring-beans"           % "4.1.6.RELEASE",
