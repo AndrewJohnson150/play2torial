@@ -1,6 +1,6 @@
 package services;
 
-import models.Task;
+import models.User;
 
 
 import java.util.List;
@@ -19,19 +19,19 @@ public class TaskPersistenceServiceImpl implements TaskPersistenceService {
 
     @Transactional
     @Override
-    public void saveTask(Task task) {
-        em.persist(task);
+    public void saveUser(User user) {
+        em.persist(user);
     }
 
     @Override
-    public List<Task> fetchAllTasks() {
-        return em.createQuery("from Task", Task.class).getResultList();
+    public List<User> fetchAllUsers() {
+        return em.createQuery("from User", User.class).getResultList();
     }
 
     @Override
-    public List<Task> fetchTaskByID(Integer idSearch) {
+    public List<User> fetchUserByID(Integer idSearch) {
         return em
-                .createQuery("from Task t WHERE t.id = :id", Task.class)
+                .createQuery("from User t WHERE t.id = :id", User.class)
                 .setParameter("id", idSearch)
                 .getResultList(); //using result list because
     }

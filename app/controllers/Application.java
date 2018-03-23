@@ -1,6 +1,6 @@
 package controllers;
 
-import models.Task;
+import models.User;
 
 import services.TaskPersistenceService;
 
@@ -28,34 +28,34 @@ public class Application extends Controller {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public Result index() {
-        return ok(index.render("hello, world", play.data.Form.form(models.Task.class)));
+        return ok(index.render("hello, world", play.data.Form.form(models.User.class)));
     }
 
-    public Result addTask() {
-        play.data.Form<models.Task> form = play.data.Form.form(models.Task.class).bindFromRequest();
-        log.info("Adding a task: " + form);
+    public Result addUser() {
+        play.data.Form<User> form = play.data.Form.form(User.class).bindFromRequest();
+        log.info("Adding a User: " + form);
         if (form.hasErrors()) {
-            log.info("Task had error(s)");
+            log.info("User had error(s)");
             return badRequest(index.render("Invalid form, try again.", form));
         }
 
-        models.Task task = form.get();
-        taskPersist.saveTask(task);
+        models.User user = form.get();
+        taskPersist.saveUser(user);
         return redirect(routes.Application.index());
     }
 
-    public Result getTasks() {
-        List<models.Task> tasks = taskPersist.fetchAllTasks();
-        return ok(play.libs.Json.toJson(tasks));
+    public Result getUsers() {
+        List<models.User> users = taskPersist.fetchAllUsers();
+        return ok(play.libs.Json.toJson(users));
     }
 
-    public Task getTaskById(Integer searchID) {
-        List<Task> tasks = taskPersist.fetchTaskByID(searchID);
-        models.Task t = null;
-        if (tasks.size()==1) {
-            t = tasks.get(0);
+    public User getUserById(Integer searchID) {
+        List<User> users = taskPersist.fetchUserByID(searchID);
+        User t = null;
+        if (users.size()==1) {
+            t = users.get(0);
         }
-        else if (tasks.size() > 1)
+        else if (users.size() > 1)
         {
             log.error("non unique ID found");
         }

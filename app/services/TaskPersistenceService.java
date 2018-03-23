@@ -1,13 +1,14 @@
 package services;
 
-import models.Task;
+import models.User;
 
 import java.util.List;
 
 public interface TaskPersistenceService {
-    void saveTask(Task t);
+    void saveUser(User t);
 
-    List<Task> fetchAllTasks();
+    List<User> fetchAllUsers();
 
-    List<Task> fetchTaskByID(Integer idSearch);
+    List<User> fetchUserByID(Integer idSearch);
+
 }
