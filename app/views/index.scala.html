@@ -1,4 +1,4 @@
-@(message: String, userForm: Form[User])
+@(message: String, userForm: Form[UserForm])
 @implicitFieldConstructor = @{ helper.FieldConstructor(twitterBootstrapInput.render) }
 
 @main("Welcome to Play") {
@@ -14,7 +14,7 @@
 <div class="container">
     <ul id="users"></ul>
     @helper.form(action = routes.Application.addUser, 'class -> "well form-horizontal") {
-    @helper.inputText(userForm("username"), '_label -> "username")
+    @helper.inputText(userForm("username"), '_label -> "Username")
     <div class="controls">
         <input type="submit" class="btn btn-primary"/>
     </div>

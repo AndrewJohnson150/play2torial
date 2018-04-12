@@ -17,7 +17,11 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 public class DataConfig {
-
+    //https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html
+    /**
+     * This function creates the desired EntityManagerFactory, which is part of the Spring framework used for injection.
+     * @return an EntityManagerFactory with the proper properties
+     */
     @Bean
     public EntityManagerFactory entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -33,11 +37,18 @@ public class DataConfig {
         return entityManagerFactory.getObject();
     }
 
+    /**
+     * @return PlatformTransactionManager. Currently this method is unused in this project, so unsure of its use.
+     * Likely internal to Spring Framework.
+     */
     @Bean
     public PlatformTransactionManager transactionManager() {
         return new JpaTransactionManager(entityManagerFactory());
     }
 
+    /**
+     * @return the datasource from the play framework.
+     */
     @Bean
     public DataSource dataSource() {
         // Return the datasource from the play framework.
