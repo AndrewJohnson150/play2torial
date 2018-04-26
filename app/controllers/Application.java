@@ -3,7 +3,7 @@ package controllers;
 import models.User;
 import models.UserForm;
 
-import services.TaskPersistenceService;
+import services.UserPersistenceService;
 
 import views.html.index;
 
@@ -24,7 +24,7 @@ public class Application extends Controller {
 
     //This tag lets spring know we need this object injected.
     @Inject
-    private TaskPersistenceService taskPersist;
+    private UserPersistenceService userPersist;
 
     private static final String EOL = System.getProperties().getProperty("line.separator");
     private static final Logger log = LoggerFactory.getLogger(Application.class);
@@ -44,17 +44,27 @@ public class Application extends Controller {
      */
     public Result addUser() {
         play.data.Form<UserForm> form = play.data.Form.form(UserForm.class).bindFromRequest();
-
+        //check for unique!!!
         if (form.hasErrors()) {
             log.info("User had error(s)");
             return badRequest(index.render("Invalid form, try again.", form));
         }
-        User u = new User();
-        u.setUsername(form.get().getUsername());
+        String username = form.get().getUsername().trim();
+        if (username.length() < 3) {
+            form.reject("username", "Field must be a minimum of 3 characters without leading or trailing whitespace");
+            return badRequest(index.render("Invalid form, try again.", form));
+        }
+        User inDB = userPersist.fetchUserByUsername(username);
+        if (inDB!=null) {
+            form.reject("username", "Field must be unique");
+            return badRequest(index.render("Invalid form, try again.", form));
+        }
+        User u = new User(username);
+
+        userPersist.saveUser(u);
 
         log.info("Adding a User: " + u);
 
-        taskPersist.saveUser(u);
         return redirect(routes.Application.index());
     }
 
@@ -62,26 +72,7 @@ public class Application extends Controller {
      * @return the users in JSON format.
      */
     public Result getUsers() {
-        List<models.User> users = taskPersist.fetchAllUsers();
+        List<models.User> users = userPersist.fetchAllUsers();
         return ok(play.libs.Json.toJson(users));
-    }
-
-    /**
-     * This method searchs for a user by ID.
-     * @param searchID the ID of the user to search for.
-     * @return  The User with ID of searchID. Will return null if multiple users are found or no users are found.
-     */
-    public User getUserById(Integer searchID) {
-        List<User> users = taskPersist.fetchUserByID(searchID);
-        User t = null;
-        if (users.size()==1) {
-            t = users.get(0);
-        }
-        else if (users.size() > 1)
-        {
-            log.error("non unique ID found");
-        }
-        return t;
-
     }
 }

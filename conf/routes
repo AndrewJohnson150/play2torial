@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                           @controllers.Application.index()
-POST    /user                       @controllers.Application.addUser()
+POST    /                           @controllers.Application.addUser()
 GET     /users                      @controllers.Application.getUsers()
 
 # Map static resources from the /public folder to the /assets URL path

@@ -7,4 +7,10 @@ class Tests {
     public void fakeTest() {
         assertTrue("Wha..., true is not true", true);
     }
+
+    public void validInput() {
+
+    }
+
+
 }
