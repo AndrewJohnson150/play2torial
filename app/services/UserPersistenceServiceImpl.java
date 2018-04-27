@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import play.mvc.Result;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,7 @@ public class UserPersistenceServiceImpl implements UserPersistenceService {
     @Transactional
     @Override
     public void saveUser(User user) {
+        if (user!=null)
         em.persist(user);
     }
 

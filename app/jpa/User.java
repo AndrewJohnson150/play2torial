@@ -6,6 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import play.data.validation.Constraints.Required;
+import play.data.validation.Constraints.MaxLength;
+import play.data.validation.Constraints.MinLength;
+import play.data.validation.Constraints.Pattern;
+
 /**
  * This is the primary model for our application. It stores ID and Username.
  */
@@ -22,8 +27,11 @@ public class User {
     @Column(unique=true)
     private Integer id;
 
-    @play.data.validation.Constraints.Required
+    @Required
     @Column(name = "username",unique=true)
+    @MaxLength(value = 20)
+    @MinLength(value = 3)
+    @Pattern(value = "^.*[^ ]+", message = "Cannot contain only spaces")
     private String username;
 
     /**

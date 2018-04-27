@@ -14,7 +14,6 @@ public class UserForm {
     @Required
     @MaxLength(value = 20)
     @MinLength(value = 3)
-    //@Pattern(value = "^\\S+$", message = "Cannot contain spaces")
     private String username;
 
     /**

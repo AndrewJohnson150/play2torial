@@ -44,7 +44,7 @@ public class Application extends Controller {
      */
     public Result addUser() {
         play.data.Form<UserForm> form = play.data.Form.form(UserForm.class).bindFromRequest();
-        //check for unique!!!
+
         if (form.hasErrors()) {
             log.info("User had error(s)");
             return badRequest(index.render("Invalid form, try again.", form));
