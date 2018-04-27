@@ -8,10 +8,7 @@ scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
   javaJpa.exclude("org.hibernate.javax.persistence", "hibernate-jpa-2.0-api"),
-  "org.hibernate" % "hibernate-entitymanager" % "4.3.8.Final" // replace by your jpa implementation
-)
-
-libraryDependencies ++= Seq(
+  "org.hibernate" % "hibernate-entitymanager" % "4.3.8.Final", // replace by your jpa implementation
   javaJdbc,
   cache,
   javaWs,
@@ -23,7 +20,8 @@ libraryDependencies ++= Seq(
   "org.springframework" % "spring-core"            % "4.1.6.RELEASE",
   "org.springframework" % "spring-jdbc"            % "4.1.6.RELEASE",
   "org.springframework" % "spring-orm"             % "4.1.6.RELEASE",
-  "org.springframework" % "spring-tx"              % "4.1.6.RELEASE"
+  "org.springframework" % "spring-tx"              % "4.1.6.RELEASE",
+  "org.springframework" % "spring-test"            % "4.1.6.RELEASE" % "test"
 )
 
 libraryDependencies += "org.webjars" % "jquery" % "1.11.2"
