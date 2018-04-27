@@ -1,6 +1,6 @@
 package controllers;
 
-import models.User;
+import jpa.User;
 import models.UserForm;
 
 import services.UserPersistenceService;
@@ -72,7 +72,7 @@ public class Application extends Controller {
      * @return the users in JSON format.
      */
     public Result getUsers() {
-        List<models.User> users = userPersist.fetchAllUsers();
+        List<User> users = userPersist.fetchAllUsers();
         return ok(play.libs.Json.toJson(users));
     }
 }

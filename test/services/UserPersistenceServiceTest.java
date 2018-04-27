@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import configs.AppConfig;
 import configs.TestDataConfig;
 
-import models.User;
+import jpa.User;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -34,7 +34,7 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
         assertTrue("List should be empty", userPersist.fetchAllUsers().isEmpty());
 
         final User t = new User();
-        t.setContents("contents");
+        t.setUsername("contents");
         assertNull("ID should not be set before persist is called", t.getId());
         userPersist.saveUser(t);
         assertNotNull("ID should be set after persist is called", t.getId());
@@ -48,7 +48,7 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
             final User t = new User();
             userPersist.saveUser(t);
             fail("This should have failed since contents is blank");
-        } catch (IllegalArgumentException ignored) {
+        } catch (javax.validation.ConstraintViolationException ignored) {
         }
     }
 
@@ -56,8 +56,8 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
     public void saveNonBlankIdUserTest() {
         try {
             final User t = new User();
-            t.setContents("contents");
-            t.setId(1L);
+            t.setUsername("contents");
+            t.setId(1);
             userPersist.saveUser(t);
             fail("This should have failed since id is not blank");
         } catch (PersistenceException ignored) {
@@ -67,14 +67,17 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
     @Test
     public void saveExistingUserTest() {
         final User t = new User();
-        t.setContents("contents");
+        t.setUsername("contents");
         userPersist.saveUser(t);
         assertNotNull("The ID should be set", t.getId());
         final List<User> list = userPersist.fetchAllUsers();
         assertTrue("List should have one element", list.size() == 1);
 
-        // Attempt to save the same user again, should fail?
+        // Attempt to save the same user again
         userPersist.saveUser(t);
-        fail("We shouldn't be able to resave the same item");
+
+        //the method should return the ONLY user with username as specified. If it returns null, it is because there are
+        //0 or 2+ users with that username.
+        assertNotNull("We shouldn't be able to resave the same item",userPersist.fetchUserByUsername(t.getUsername()));
     }
 }

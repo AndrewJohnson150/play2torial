@@ -31,7 +31,7 @@ public class DataConfig {
         vendorAdapter.setDatabase(Database.MYSQL);
 
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactory.setPackagesToScan("models");
+        entityManagerFactory.setPackagesToScan("jpa");
         entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
         entityManagerFactory.setDataSource(dataSource());
         entityManagerFactory.afterPropertiesSet();

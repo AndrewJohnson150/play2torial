@@ -1,6 +1,6 @@
 package services;
 
-import models.User;
+import jpa.User;
 
 
 import java.util.List;
