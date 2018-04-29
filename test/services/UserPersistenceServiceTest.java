@@ -139,7 +139,7 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
         assertTrue("User FetchAllUsers did not return the proper user in the list",list.get(0).getUsername().equals("Dan"));
     }
 
-    //fetchUserByID
+    //fetchUserBy
     //many of the same tests essentially
     //storing 0,1,more, weird things as well
 
@@ -148,12 +148,51 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
         User bob = new User("Bob");
         User joe = new User("Joe");
         User dan = new User("Dan");
-        userPersist.saveUser(bob);
-        userPersist.saveUser(joe);
-        userPersist.saveUser(dan);
+        assertTrue("Failed to add user",userPersist.saveUser(bob));
+        assertTrue("Failed to add user",userPersist.saveUser(joe));
+        assertTrue("Failed to add user",userPersist.saveUser(dan));
 
-        assertTrue((bob.getId()!=joe.getId()) && (joe.getId()!=dan.getId()));
+        assertTrue("ID not unique",(bob.getId()!=joe.getId()) && (joe.getId()!=dan.getId()));
     }
 
+    @Test
+    public void fetchByUsernameThatDoesntExist() {
+        assertNull("Found a user that doesnt exist.",userPersist.fetchUserByUsername("Blah"));
+    }
 
+    @Test
+    public void fetchByUsername() {
+        User bob = new User("Bob");
+        assertTrue("Failed to add user",userPersist.saveUser(bob));
+        User u = userPersist.fetchUserByUsername("Bob");
+        assertNotNull("Failed to find a user", u);
+        assertTrue("Found the incorrect user",u.getUsername().equals("Bob"));
+
+    }
+
+    @Test
+    public void fetchByUsernameWithMultipleUsers() {
+        User bob = new User("Bob");
+        User joe = new User("Joe");
+        User dan = new User("Dan");
+        assertTrue("Failed to add user",userPersist.saveUser(bob));
+        assertTrue("Failed to add user",userPersist.saveUser(joe));
+        assertTrue("Failed to add user",userPersist.saveUser(dan));
+        User u = userPersist.fetchUserByUsername("Bob");
+        assertNotNull("Failed to find a user", u);
+        assertTrue("Found the incorrect user", u.getUsername().equals("Bob"));
+
+    }
+
+    @Test
+    public void fetchByUsernameWithPartialMatch() {
+        User bob = new User("Bob");
+        User joe = new User("Joe");
+        User dan = new User("Dan");
+        assertTrue("Failed to add user",userPersist.saveUser(bob));
+        assertTrue("Failed to add user",userPersist.saveUser(joe));
+        assertTrue("Failed to add user",userPersist.saveUser(dan));
+        User u = userPersist.fetchUserByUsername("Bo");
+        assertNull("Found a user when we shouldn't have", u);
+    }
 }
