@@ -2,8 +2,19 @@ This project's purpose is for me to become familiar with the Play framework. The
 
 The default username and password for the database are found in application.conf.
 
-To help understand validation, the text field must be between 3-20 characters, not containing leading or trailing whitespace. There can also be no duplicates.
+The text field must be between 3-20 characters, not containing leading or trailing whitespace. There can also be no duplicates.
 
 This project was started with the following tutorial:
 
 [Learn how to use Play 2.3 with Java](https://github.com/YogoGit/play2torial/blob/master/JAVA.md)
+
+
+The frameworks involved in the application include Hibernate, Spring, JUnit, and slf4j. 
+
+Hibernate handles the transition from a Java Object to an entry in the MySQL database. When an Object has the '@Entity' tag, Hibernate knows to create a table for it. The DataConfig.java file dictates whether or not Hibernate may create tables with the 'vendorAdapter.setGenerateDdl(true);' line.
+
+Spring handles dependency injection, for example when the phrase '@inject' is in a class that has the keyword '@Named', the necessary object is injected. The files Spring scans for those keywords in can be changed in AppConfig.java.
+
+JUnit handles the testing for the application. In the test file, every method with an @Test tag is considered a test. When 'sbt test' is run, these tests are run and the outcome is reported.
+
+slf4j is the logging framework for the application, and is configured in the Logger.xml file.
