@@ -5,7 +5,7 @@ import jpa.User;
 import java.util.List;
 
 public interface UserPersistenceService {
-    void saveUser(User t);
+    boolean saveUser(User t);
 
     /**
      * fetches all users from database, in a List>.

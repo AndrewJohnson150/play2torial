@@ -27,14 +27,24 @@ public class UserPersistenceServiceImpl implements UserPersistenceService {
     private EntityManager em;
 
     /**
-     * simply persists the user that is passed
+     * simply persists the user that is passed. Validates the passed user.
      * @param user A user to persist to the DB
      */
     @Transactional
     @Override
-    public void saveUser(User user) {
-        if (user!=null)
+    public boolean saveUser(User user) {
+        if (user==null)
+            return false;
+        //trim off whitespace
+        user.setUsername(user.getUsername().trim());
+        if (user.getUsername().length()<3 ||
+                user.getUsername().length()>20 ||
+                user.getId() != null ||
+                )
+            return false;
+
         em.persist(user);
+        return true;
     }
 
     /**

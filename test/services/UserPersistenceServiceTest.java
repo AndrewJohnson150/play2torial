@@ -36,33 +36,27 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
 
         final User u = new User();
         u.setUsername("contents");
+        assertTrue("Username must be at least 3 characters", u.getUsername().length()>=3);
         assertNull("ID should not be set before persist is called", u.getId());
         userPersist.saveUser(u);
         assertNotNull("ID should be set after persist is called", u.getId());
         final List<User> list = userPersist.fetchAllUsers();
         assertTrue("List should have one element", list.size() == 1);
+        assertEquals("Username does not match what was stored.", u.getUsername(),list.get(0).getUsername());
     }
 
     @Test
     public void saveBlankUserTest() {
-        try {
-            final User u = new User();
-            userPersist.saveUser(u);
-            fail("This should have failed since username is blank");
-        } catch (ConstraintViolationException ignored) {
-        }
+        final User u = new User();
+        assertFalse("This should have failed since username is blank",userPersist.saveUser(u));
     }
 
     @Test
     public void saveNonBlankIdUserTest() {
-        try {
-            final User u = new User();
-            u.setUsername("contents");
-            u.setId(1);
-            userPersist.saveUser(u);
-            fail("This should have failed since id is not blank");
-        } catch (PersistenceException ignored) {
-        }
+        final User u = new User();
+        u.setUsername("contents");
+        u.setId(1);
+        assertFalse("This should have failed since id is not blank",userPersist.saveUser(u));
     }
 
     @Test
@@ -75,65 +69,49 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
         assertTrue("List should have one element", list.size() == 1);
 
         // Attempt to save the same user again
-        userPersist.saveUser(u);
-
-        //the method should return the ONLY user with username as specified. If it returns null, it is because there are
-        //0 or 2+ users with that username.
-        assertNotNull("We shouldn't be able to resave the same item",userPersist.fetchUserByUsername(u.getUsername()));
+        assertFalse("We shouldn't be able to resave the same user twice",userPersist.saveUser(u));
     }
 
     @Test
     public void saveUserWithShortUsername() {
-        try {
-            final User u = new User("aa");
-            userPersist.saveUser(u);
-            fail("We shouldn't be able to save a user with a username less than 3 characters.");
-        } catch (ConstraintViolationException ignore) {}
+        final User u = new User("aa");
+        assertFalse("We shouldn't be able to save a user with a username less than 3 characters.",userPersist.saveUser(u));
     }
 
     @Test
     public void saveUserWithLongUsername() {
-        try {
-            final User u = new User("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            userPersist.saveUser(u);
-            fail("We shouldn't be able to save a user with a username more than 20 characters.");
-        } catch (ConstraintViolationException ignore) {}
+        final User u = new User("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        assertFalse("We shouldn't be able to save a user with a username more than 20 characters.",userPersist.saveUser(u));
     }
 
     @Test
     public void saveUsernameOfSpaces() {
-        try {
-            final User u = new User("   ");
-            userPersist.saveUser(u);
-            fail("We shouldn't be able to save a user with a username of only spaces");
-        } catch (ConstraintViolationException ignore) {}
-
+        final User u = new User("   ");
+        assertFalse("We shouldn't be able to save a user with a username of only spaces",userPersist.saveUser(u));
     }
 
     //Obviously nothing can't be added to the db. If this throws an exception then the test fails, though.
     @Test
-    public void addNullUser() {
-        try {
-            userPersist.saveUser(null);
-        } catch (Exception fail) {
-            fail("Saving a null user causes an exception");
-        }
+    public void saveNullUser() {
+        assertFalse("Saving a null user causes an exception",userPersist.saveUser(null));
     }
 
     @Test
     public void addMultipleUsers() {
-        userPersist.saveUser(new User("Bob"));
-        userPersist.saveUser(new User("Joe"));
-        userPersist.saveUser(new User("Dan"));
+        assertTrue("Failed to add user",userPersist.saveUser(new User("Bob")));
+        assertTrue("Failed to add user",userPersist.saveUser(new User("Joe")));
+        assertTrue("Failed to add user",userPersist.saveUser(new User("Dan")));
+        assertTrue("not all users stored",userPersist.fetchAllUsers().length() == 3);
+
     }
 
     @Test
-    public void addUserWithSpecialCharacters() {
+    public void saveUserWithSpecialCharacters() {
         userPersist.saveUser(new User("!@#$%^%"));
     }
 
     @Test
-    public void testFetchAllUsers() {
+    public void fetchUsers() {
         userPersist.saveUser(new User("Bob"));
         userPersist.saveUser(new User("Joe"));
         userPersist.saveUser(new User("Dan"));
@@ -142,6 +120,25 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
 
         assertTrue("fetch all users did not return proper number of users",list.size() == 3);
     }
+
+    @Test
+    public void fetchUsersWhenThereAreNone() {
+        final List<User> list = userPersist.fetchAllUsers();
+        assertTrue("fetch all users did not return proper number of users",list.size() == 0);
+    }
+
+    @Test
+    public void fetchUsersWhenThereIsOne() {
+        userPersist.saveUser(new User("Dan"));
+
+        final List<User> list = userPersist.fetchAllUsers();
+        assertTrue("fetch all users did not return proper number of users",list.size() == 1);
+        assertTrue("User FetchAllUsers did not return the proper user in the list",list.get(0).getUsername().Equals("Dan"))
+    }
+
+    //fetchUserByID
+    //many of the same tests essentially
+    //storing 0,1,more, weird things as well
 
     @Test
     public void testUniqueID() {
