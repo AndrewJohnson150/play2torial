@@ -3,6 +3,8 @@ package services;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import configs.AppConfig;
@@ -101,7 +103,8 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
         assertTrue("Failed to add user",userPersist.saveUser(new User("Bob")));
         assertTrue("Failed to add user",userPersist.saveUser(new User("Joe")));
         assertTrue("Failed to add user",userPersist.saveUser(new User("Dan")));
-        assertTrue("not all users stored",userPersist.fetchAllUsers().length() == 3);
+        final List<User> list = userPersist.fetchAllUsers();
+        assertTrue("not all users stored",list.size() == 3);
 
     }
 
@@ -133,7 +136,7 @@ public class UserPersistenceServiceTest extends AbstractTransactionalJUnit4Sprin
 
         final List<User> list = userPersist.fetchAllUsers();
         assertTrue("fetch all users did not return proper number of users",list.size() == 1);
-        assertTrue("User FetchAllUsers did not return the proper user in the list",list.get(0).getUsername().Equals("Dan"))
+        assertTrue("User FetchAllUsers did not return the proper user in the list",list.get(0).getUsername().equals("Dan"));
     }
 
     //fetchUserByID

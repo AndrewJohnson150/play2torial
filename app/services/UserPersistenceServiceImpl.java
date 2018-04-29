@@ -33,14 +33,13 @@ public class UserPersistenceServiceImpl implements UserPersistenceService {
     @Transactional
     @Override
     public boolean saveUser(User user) {
-        if (user==null)
+        if (user==null || user.getUsername() == null)
             return false;
         //trim off whitespace
         user.setUsername(user.getUsername().trim());
         if (user.getUsername().length()<3 ||
                 user.getUsername().length()>20 ||
-                user.getId() != null ||
-                )
+                user.getId() != null)
             return false;
 
         em.persist(user);
